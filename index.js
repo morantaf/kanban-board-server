@@ -10,6 +10,10 @@ const db = require("./db");
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: ({ req, res }) => ({
+    req,
+    res,
+  }),
 });
 
 server.applyMiddleware({ app });
