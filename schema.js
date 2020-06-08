@@ -20,6 +20,11 @@ const typeDefs = gql`
     refreshToken: String
   }
 
+  type List {
+    id: Int!
+    name: String!
+  }
+
   type Query {
     board(id: Int!): Board
     boards: [Board]
@@ -29,6 +34,8 @@ const typeDefs = gql`
 
   type Mutation {
     addBoard(title: String!, description: String): Board
+
+    addList(name: String!): List
 
     signup(
       firstName: String!
