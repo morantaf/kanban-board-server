@@ -15,6 +15,11 @@ const typeDefs = gql`
     description: String
   }
 
+  type Tokens {
+    accessToken: String
+    refreshToken: String
+  }
+
   type Query {
     board(id: Int!): Board
     boards: [Board]
@@ -30,7 +35,9 @@ const typeDefs = gql`
       username: String
       password: String!
     ): User
+
     addBoard(title: String!, description: String): Board
+
     signup(
       firstName: String!
       lastName: String!
@@ -38,7 +45,8 @@ const typeDefs = gql`
       username: String!
       password: String!
     ): User
-    login(email: String!, password: String!): String
+
+    login(email: String!, password: String!): Tokens
   }
 `;
 

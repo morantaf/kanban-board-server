@@ -1,6 +1,8 @@
 const User = require("./UserModel");
 const Board = require("./BoardModel");
 const bcrypt = require("bcrypt");
+const { setTokens } = require("./auth/setTokens");
+const { AuthenticationError } = require("apollo-server-express");
 
 const resolvers = {
   Query: {
@@ -13,16 +15,12 @@ const resolvers = {
         console.error(e);
       }
     },
-    board: async (_, args, __) => {
+    board: async (_, args, { req }) => {
       try {
-        console.log("session ?", session);
-        if (session.userId != 1) {
-          return { title: "You are not allowed to see this" };
-        }
-        if (args.id) {
-          const board = await Board.findByPk(args.id);
-          return board.dataValues;
-        }
+        console.log("req.user ?", req.user);
+        if (!req.user) throw new AuthenticationError("Must authenticate");
+        const board = await Board.findByPk(args.id);
+        return board.dataValues;
       } catch (e) {
         console.error(e);
       }
@@ -64,16 +62,18 @@ const resolvers = {
         console.error(e);
       }
     },
-    login: async (_, args, __) => {
+    login: async (_, { email, password }, __) => {
       try {
-        if (!args.email || !args.password) {
+        if (!email || !password) {
           response.status(400).send("Please enter a valid e-mail and password");
         } else {
           const user = await User.findOne({
-            where: { email: args.email },
+            where: { email: email },
           });
 
-          return user.dataValues.password === args.password ? true : false;
+          return user.dataValues.password === password
+            ? setTokens(user.dataValues)
+            : null;
         }
       } catch (e) {
         console.error(e);
