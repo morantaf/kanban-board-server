@@ -16,7 +16,7 @@ const List = db.define(
   }
 );
 
-List.BelongsTo(User);
-List.BelongsTo(Board);
+List.belongsTo(User);
+List.belongsTo(Board);
 
 module.exports = List;
