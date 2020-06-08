@@ -4,7 +4,7 @@ let refreshSecret = "fgdgmoelkdsgnc45213";
 let accessSecret = "wx:cvnemdsnigoi153$⁼ù:";
 
 const setTokens = (user) => {
-  const sevenDays = 60 * 60 * 24 * 7 * 1000;
+  const oneDay = 60 * 60 * 24 * 1000;
   const fifteenMinutes = 60 * 15 * 1000;
 
   const accessUser = {
@@ -18,7 +18,7 @@ const setTokens = (user) => {
     expiresIn: fifteenMinutes,
   });
   const refreshToken = jwt.sign({ user: refreshUser }, refreshSecret, {
-    expiresIn: sevenDays,
+    expiresIn: oneDay,
   });
 
   return { refreshToken, accessToken };
