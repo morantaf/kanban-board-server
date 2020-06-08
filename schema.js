@@ -35,7 +35,7 @@ const typeDefs = gql`
   type Mutation {
     addBoard(title: String!, description: String): Board
 
-    addList(name: String!): List
+    addList(name: String!, boardId: Int!): List
 
     signup(
       firstName: String!
