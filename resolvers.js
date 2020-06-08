@@ -36,12 +36,16 @@ const resolvers = {
     },
   },
   Mutation: {
-    addBoard: async (_, args, __) => {
+    addBoard: async (_, args, { req }) => {
       try {
+        const user = await User.findByPk(req.user.id);
+
         const newBoard = await Board.create({
           title: args.title,
           description: args.description,
         });
+
+        await user.addBoard(newBoard);
 
         return newBoard.dataValues;
       } catch (e) {
@@ -71,7 +75,7 @@ const resolvers = {
             where: { email: email },
           });
 
-          return user.dataValues.password === password
+          return bcrypt.compareSync(password, user.dataValues.password)
             ? setTokens(user.dataValues)
             : null;
         }
