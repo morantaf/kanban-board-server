@@ -2,6 +2,7 @@ const express = require("express");
 const { ApolloServer } = require("apollo-server-express");
 const typeDefs = require("./schema");
 const resolvers = require("./resolvers");
+const validateTokensMiddleware = require("./auth/validateTokensMiddleware");
 
 const app = express();
 const port = 4000;
@@ -16,6 +17,7 @@ const server = new ApolloServer({
   }),
 });
 
+app.use(validateTokensMiddleware);
 server.applyMiddleware({ app });
 
 app.listen(port, () =>

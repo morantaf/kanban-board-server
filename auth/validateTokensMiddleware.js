@@ -12,6 +12,7 @@ const validateTokenMiddleware = async (req, res, next) => {
   if (!accessToken && !refreshToken) return next();
 
   const decodedAccessToken = validateAccessToken(accessToken);
+
   if (decodedAccessToken && decodedAccessToken.user) {
     req.user = decodedAccessToken.user;
     return next();
@@ -33,8 +34,12 @@ const validateTokenMiddleware = async (req, res, next) => {
       "x-access-token": userTokens.accessToken,
       "x-refresh-token": userTokens.refreshToken,
     });
+
+    console.log("res ?");
     return next();
   }
 
   next();
 };
+
+module.exports = validateTokenMiddleware;
