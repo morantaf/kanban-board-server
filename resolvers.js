@@ -19,7 +19,7 @@ const resolvers = {
     board: async (_, args, { req }) => {
       try {
         console.log("req.user ?", req.user);
-        if (!req.user) throw new AuthenticationError("Must authenticate");
+        if (!req.user) return new AuthenticationError("Must authenticate");
         const board = await Board.findByPk(args.id);
         return board.dataValues;
       } catch (e) {
