@@ -1,5 +1,6 @@
 const User = require("./UserModel");
 const Board = require("./BoardModel");
+const List = require("./ListModel");
 const bcrypt = require("bcrypt");
 const { setTokens } = require("./auth/setTokens");
 const { AuthenticationError } = require("apollo-server-express");
@@ -52,6 +53,20 @@ const resolvers = {
         console.error(e);
       }
     },
+    addList: async (_, { name, boardId }, { req }) => {
+      try {
+        const newList = await List.create({
+          name: name,
+          userId: req.user.id,
+          boardId: boardId,
+        });
+
+        return newList.dataValues;
+      } catch (e) {
+        console.error(e);
+      }
+    },
+
     signup: async (_, args, __) => {
       try {
         const newUser = await User.create({
