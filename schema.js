@@ -25,6 +25,13 @@ const typeDefs = gql`
     name: String!
   }
 
+  type Card {
+    id: Int!
+    title: String!
+    description: String!
+    status: String
+  }
+
   type Query {
     board(id: Int!): Board
     boards: [Board]
