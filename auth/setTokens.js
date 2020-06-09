@@ -24,7 +24,7 @@ const setTokens = (user) => {
   return { refreshToken, accessToken };
 };
 
-const validateAccessToken = (token) => {
+const validateAccessToken = async (token) => {
   try {
     return jwt.verify(token, accessSecret);
   } catch (e) {
@@ -32,7 +32,7 @@ const validateAccessToken = (token) => {
   }
 };
 
-const validateRefreshToken = (token) => {
+const validateRefreshToken = async (token) => {
   try {
     return jwt.verify(token, refreshSecret);
   } catch (e) {
