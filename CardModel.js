@@ -25,5 +25,7 @@ const Card = db.define(
 );
 
 Card.belongsTo(List);
+Card.belongsToMany(User, { through: "UserCard" });
+User.belongsToMany(Card, { through: "UserCard" });
 
 module.exports = Card;
