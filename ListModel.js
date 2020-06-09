@@ -6,7 +6,7 @@ const User = require("./UserModel");
 const List = db.define(
   "lists",
   {
-    username: {
+    name: {
       type: Sequelize.STRING,
       allowNull: false,
     },
