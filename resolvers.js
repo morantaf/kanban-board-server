@@ -26,8 +26,11 @@ const resolvers = {
         console.error(e);
       }
     },
-    boards: async (_, args, __) => {
+    boards: async (_, args, { req }) => {
       try {
+        console.log("req.user ?", req.user);
+        if (!req.user) return new AuthenticationError("Must authenticate");
+
         const boards = await Board.findAll();
         const dataToDisplay = boards.map((board) => board.dataValues);
         return dataToDisplay;
