@@ -44,6 +44,13 @@ const typeDefs = gql`
 
     addList(name: String!, boardId: Int!): List
 
+    addCard(
+      title: String!
+      listId: Int!
+      description: String!
+      status: String
+    ): Card
+
     signup(
       firstName: String!
       lastName: String!
