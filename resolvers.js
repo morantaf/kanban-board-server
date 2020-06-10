@@ -1,6 +1,7 @@
 const User = require("./UserModel");
 const Board = require("./BoardModel");
 const List = require("./ListModel");
+const Card = require("./CardModel");
 const bcrypt = require("bcrypt");
 const { setTokens } = require("./auth/setTokens");
 const { AuthenticationError } = require("apollo-server-express");
@@ -86,6 +87,24 @@ const resolvers = {
         });
 
         return newList.dataValues;
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    addCard: async (_, { title, description, listId, status }, { req }) => {
+      try {
+        const user = await User.findByPk(req.user.id);
+
+        const newCard = await Card.create({
+          title: title,
+          listId: listId,
+          description: description,
+          status: status,
+        });
+
+        await user.addCard(newCard);
+
+        return newCard.dataValues;
       } catch (e) {
         console.error(e);
       }

@@ -25,6 +25,13 @@ const typeDefs = gql`
     name: String!
   }
 
+  type Card {
+    id: Int!
+    title: String!
+    description: String!
+    status: String
+  }
+
   type Query {
     board(id: Int!): Board
     boards: [Board]
@@ -37,6 +44,13 @@ const typeDefs = gql`
     addBoard(title: String!, description: String): Board
 
     addList(name: String!, boardId: Int!): List
+
+    addCard(
+      title: String!
+      listId: Int!
+      description: String!
+      status: String
+    ): Card
 
     signup(
       firstName: String!
