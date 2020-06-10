@@ -45,7 +45,7 @@ const resolvers = {
         console.error(e);
       }
     },
-    listsByBoard: async (_, { boardId }, { req }) => {
+    listsByBoard: async (_, { boardId }, __) => {
       try {
         const listsByBoard = await List.findAll({
           where: {
@@ -54,6 +54,21 @@ const resolvers = {
         });
 
         const dataToSend = listsByBoard.map((list) => list.dataValues);
+
+        return dataToSend;
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    cardsByList: async (_, { listId }, __) => {
+      try {
+        const cardsByList = await Card.findAll({
+          where: {
+            listId: listId,
+          },
+        });
+
+        const dataToSend = cardsByList.map((card) => card.dataValues);
 
         return dataToSend;
       } catch (e) {
