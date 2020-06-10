@@ -44,6 +44,21 @@ const resolvers = {
         console.error(e);
       }
     },
+    listsByBoard: async (_, { boardId }, { req }) => {
+      try {
+        const listsByBoard = await List.findAll({
+          where: {
+            boardId: boardId,
+          },
+        });
+
+        const dataToSend = listsByBoard.map((list) => list.dataValues);
+
+        return dataToSend;
+      } catch (e) {
+        console.error(e);
+      }
+    },
   },
   Mutation: {
     addBoard: async (_, args, { req }) => {
