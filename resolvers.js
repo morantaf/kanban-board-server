@@ -31,9 +31,15 @@ const resolvers = {
         console.log("req.user ?", req.user);
         if (!req.user) return new AuthenticationError("Must authenticate");
 
-        const boards = await Board.findAll();
-        const dataToDisplay = boards.map((board) => board.dataValues);
-        return dataToDisplay;
+        const user = await User.findByPk(req.user.id, {
+          include: { model: Board, through: { attributes: [] } },
+        });
+
+        const boardsByUser = user.dataValues.boards;
+
+        const dataToSend = boardsByUser.map((board) => board.dataValues);
+
+        return dataToSend;
       } catch (e) {
         console.error(e);
       }

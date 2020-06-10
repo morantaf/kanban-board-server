@@ -30,6 +30,7 @@ const typeDefs = gql`
     boards: [Board]
     user(id: Int!): User
     users: [User]
+    listByBoard(boardId: Int!): [List]
   }
 
   type Mutation {
