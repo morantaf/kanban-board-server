@@ -24,7 +24,7 @@ const validateTokenMiddleware = async (req, res, next) => {
     if (decodedRefreshToken && decodedRefreshToken.user) {
       console.log("refresh token decoded");
       const user = await User.findOne({
-        where: { userId: decodedRefreshToken.user.id },
+        where: { id: decodedRefreshToken.user.id },
       });
 
       if (!user || user.tokenCount !== decodedRefreshToken.user.count)
@@ -41,7 +41,6 @@ const validateTokenMiddleware = async (req, res, next) => {
       console.log("res ?");
       return next();
     }
-    console.log("End of the middleware");
     next();
   } catch (e) {
     console.log(e);

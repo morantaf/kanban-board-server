@@ -40,4 +40,18 @@ const validateRefreshToken = async (token) => {
   }
 };
 
-module.exports = { setTokens, validateAccessToken, validateRefreshToken };
+function toJWT(data) {
+  return jwt.sign(data, accessSecret, { expiresIn: "1h" });
+}
+
+function toData(token) {
+  return jwt.verify(token, secret);
+}
+
+module.exports = {
+  setTokens,
+  validateAccessToken,
+  validateRefreshToken,
+  toJWT,
+  toData,
+};

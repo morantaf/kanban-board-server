@@ -16,6 +16,7 @@ const typeDefs = gql`
   }
 
   type Tokens {
+    username: String
     accessToken: String
     refreshToken: String
   }

@@ -17,6 +17,15 @@ const resolvers = {
         console.error(e);
       }
     },
+    user: async (_, __, { req }) => {
+      try {
+        const user = await User.findByPk(req.user.id);
+        const dataToDisplay = users.dataValues;
+        return dataToDisplay;
+      } catch (e) {
+        console.error(e);
+      }
+    },
     board: async (_, args, { req }) => {
       try {
         console.log("req.user ?", req.user);
@@ -148,8 +157,10 @@ const resolvers = {
             where: { email: email },
           });
 
+          const { accessToken, refreshToken } = setTokens(user.dataValues);
+
           return bcrypt.compareSync(password, user.dataValues.password)
-            ? setTokens(user.dataValues)
+            ? { accessToken, refreshToken, username: user.dataValues.username }
             : null;
         }
       } catch (e) {
