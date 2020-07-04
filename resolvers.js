@@ -134,11 +134,29 @@ const resolvers = {
         console.error(e);
       }
     },
-    deleteCard: async (_, { id }, { req }) => {
+    deleteCard: async (_, { id }) => {
       try {
         const cardToDestroy = await Card.destroy({ where: { id } });
 
         return cardToDestroy;
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    deleteBoard: async (_, { id }) => {
+      try {
+        const boardToDestroy = await Board.destroy({ where: { id } });
+
+        return boardToDestroy;
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    deleteList: async (_, { id }) => {
+      try {
+        const listToDestroy = await List.destroy({ where: { id } });
+
+        return listToDestroy;
       } catch (e) {
         console.error(e);
       }
