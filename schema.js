@@ -69,6 +69,8 @@ const typeDefs = gql`
     login(email: String!, password: String!): Tokens
 
     deleteCard(id: Int!): Status
+    deleteList(id: Int!): Status
+    deleteBoard(id: Int!): Status
   }
 `;
 
