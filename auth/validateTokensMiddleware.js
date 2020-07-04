@@ -15,14 +15,14 @@ const validateTokenMiddleware = async (req, res, next) => {
     const decodedAccessToken = await validateAccessToken(accessToken);
 
     if (decodedAccessToken && decodedAccessToken.user) {
-      console.log("access token decoded : ", decodedAccessToken);
+      // console.log("access token decoded : ", decodedAccessToken);
       req.user = decodedAccessToken.user;
       return next();
     }
 
     const decodedRefreshToken = await validateRefreshToken(refreshToken);
     if (decodedRefreshToken && decodedRefreshToken.user) {
-      console.log("refresh token decoded");
+      // console.log("refresh token decoded");
       const user = await User.findOne({
         where: { id: decodedRefreshToken.user.id },
       });
