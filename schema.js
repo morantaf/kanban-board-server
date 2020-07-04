@@ -29,8 +29,12 @@ const typeDefs = gql`
   type Card {
     id: Int!
     title: String!
-    description: String!
+    description: String
     status: String
+  }
+
+  type Status {
+    deleted: Boolean
   }
 
   type Query {
@@ -50,7 +54,7 @@ const typeDefs = gql`
     addCard(
       title: String!
       listId: Int!
-      description: String!
+      description: String
       status: String
     ): Card
 
@@ -63,6 +67,8 @@ const typeDefs = gql`
     ): User
 
     login(email: String!, password: String!): Tokens
+
+    deleteCard(id: Int!): Status
   }
 `;
 

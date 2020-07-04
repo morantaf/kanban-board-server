@@ -56,6 +56,7 @@ const resolvers = {
     },
     listsByBoard: async (_, { boardId }, __) => {
       try {
+        console.log("listByBoard ? boardId: ", boardId);
         const listsByBoard = await List.findAll({
           where: {
             boardId: boardId,
@@ -129,6 +130,15 @@ const resolvers = {
         await user.addCard(newCard);
 
         return newCard.dataValues;
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    deleteCard: async (_, { id }, { req }) => {
+      try {
+        const cardToDestroy = await Card.destroy({ where: { id } });
+
+        return cardToDestroy;
       } catch (e) {
         console.error(e);
       }
