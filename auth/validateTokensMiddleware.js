@@ -1,46 +1,24 @@
-const {
-  validateAccessToken,
-  validateRefreshToken,
-  setTokens,
-} = require("./setTokens");
+// const {
+//   validateAccessToken,
+//   validateRefreshToken,
+//   setTokens,
+// } = require("./setTokens");
+
+const { toData } = require("./setTokens");
 
 const User = require("../UserModel");
 
 const validateTokenMiddleware = async (req, res, next) => {
   try {
-    const refreshToken = req.headers["x-refresh-token"];
-    const accessToken = req.headers["x-access-token"];
-    if (!accessToken && !refreshToken) return next();
+    const auth =
+      req.headers.authorization && req.headers.authorization.split(" ");
 
-    const decodedAccessToken = await validateAccessToken(accessToken);
-
-    if (decodedAccessToken && decodedAccessToken.user) {
-      // console.log("access token decoded : ", decodedAccessToken);
-      req.user = decodedAccessToken.user;
+    if (auth && auth[0] === "Bearer" && auth[1]) {
+      const data = await toData(auth[1]);
+      req.userId = data.id;
       return next();
     }
 
-    const decodedRefreshToken = await validateRefreshToken(refreshToken);
-    if (decodedRefreshToken && decodedRefreshToken.user) {
-      // console.log("refresh token decoded");
-      const user = await User.findOne({
-        where: { id: decodedRefreshToken.user.id },
-      });
-
-      if (!user || user.tokenCount !== decodedRefreshToken.user.count)
-        return next();
-      req.user = decodedRefreshToken.user;
-
-      const userTokens = setTokens(user);
-      res.set({
-        "Access-Control-Expose-Headers": "x-access-token,x-refresh-token",
-        "x-access-token": userTokens.accessToken,
-        "x-refresh-token": userTokens.refreshToken,
-      });
-
-      console.log("res ?");
-      return next();
-    }
     next();
   } catch (e) {
     console.log(e);
