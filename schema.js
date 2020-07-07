@@ -16,9 +16,8 @@ const typeDefs = gql`
   }
 
   type Tokens {
-    username: String
-    accessToken: String
-    refreshToken: String
+    jwt: String
+    userId: Int
   }
 
   type List {
@@ -39,7 +38,7 @@ const typeDefs = gql`
 
   type Query {
     board(id: Int!): Board
-    boards: [Board]
+    boards(userId: Int): [Board]
     user(id: Int!): User
     users: [User]
     listsByBoard(boardId: Int!): [List]
