@@ -3,7 +3,7 @@ const Board = require("./BoardModel");
 const List = require("./ListModel");
 const Card = require("./CardModel");
 const bcrypt = require("bcrypt");
-const { setTokens } = require("./auth/setTokens");
+const { toJWT } = require("./auth/setTokens");
 const { AuthenticationError } = require("apollo-server-express");
 
 const resolvers = {
@@ -19,7 +19,7 @@ const resolvers = {
     },
     user: async (_, __, { req }) => {
       try {
-        const user = await User.findByPk(req.user.id);
+        const user = await User.findByPk(req.userId);
         const dataToDisplay = users.dataValues;
         return dataToDisplay;
       } catch (e) {
@@ -28,20 +28,23 @@ const resolvers = {
     },
     board: async (_, args, { req }) => {
       try {
-        console.log("req.user ?", req.user);
-        if (!req.user) return new AuthenticationError("Must authenticate");
+        if (!req.userId) return new AuthenticationError("Authentication");
         const board = await Board.findByPk(args.id);
         return board.dataValues;
       } catch (e) {
         console.error(e);
       }
     },
-    boards: async (_, args, { req }) => {
+    boards: async (_, { userId }, { req }) => {
       try {
-        console.log("req.user ?", req.user);
-        if (!req.user) return new AuthenticationError("Must authenticate");
+        if (!req.userId) return new AuthenticationError("Authentication");
 
-        const user = await User.findByPk(req.user.id, {
+        if (req.userId !== userId)
+          return new AuthenticationError(
+            "You don't have the authorization to access this profile"
+          );
+
+        const user = await User.findByPk(userId, {
           include: { model: Board, through: { attributes: [] } },
         });
 
@@ -89,7 +92,7 @@ const resolvers = {
   Mutation: {
     addBoard: async (_, args, { req }) => {
       try {
-        const user = await User.findByPk(req.user.id);
+        const user = await User.findByPk(req.userId);
 
         const newBoard = await Board.create({
           title: args.title,
@@ -107,7 +110,7 @@ const resolvers = {
       try {
         const newList = await List.create({
           name: name,
-          userId: req.user.id,
+          userId: req.userId,
           boardId: boardId,
         });
 
@@ -118,7 +121,7 @@ const resolvers = {
     },
     addCard: async (_, { title, description, listId, status }, { req }) => {
       try {
-        const user = await User.findByPk(req.user.id);
+        const user = await User.findByPk(req.userId);
 
         const newCard = await Card.create({
           title: title,
@@ -179,16 +182,18 @@ const resolvers = {
     login: async (_, { email, password }, __) => {
       try {
         if (!email || !password) {
-          response.status(400).send("Please enter a valid e-mail and password");
+          return new AuthenticationError(
+            "Please enter a valid e-mail and password"
+          );
         } else {
           const user = await User.findOne({
             where: { email: email },
           });
 
-          const { accessToken, refreshToken } = setTokens(user.dataValues);
+          const jwt = toJWT({ id: user.dataValues.id });
 
           return bcrypt.compareSync(password, user.dataValues.password)
-            ? { accessToken, refreshToken, username: user.dataValues.username }
+            ? { jwt, userId: user.id }
             : null;
         }
       } catch (e) {
