@@ -44,8 +44,14 @@ function toJWT(data) {
   return jwt.sign(data, accessSecret, { expiresIn: "1h" });
 }
 
-function toData(token) {
-  return jwt.verify(token, secret);
+async function toData(token) {
+  try {
+    return jwt.verify(token, accessSecret);
+  } catch (e) {
+    if (err instanceof jwt.TokenExpiredError) {
+      return err;
+    }
+  }
 }
 
 module.exports = {
