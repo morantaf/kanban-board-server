@@ -59,16 +59,22 @@ const resolvers = {
     },
     listsByBoard: async (_, { boardId }, __) => {
       try {
-        console.log("listByBoard ? boardId: ", boardId);
         const listsByBoard = await List.findAll({
           where: {
             boardId: boardId,
           },
         });
 
-        const dataToSend = listsByBoard.map((list) => list.dataValues);
+        const formatedResult = listsByBoard.map((list) => list.dataValues);
 
-        return dataToSend;
+        const sortedArray = formatedResult.sort(
+          (firstElement, secondElement) =>
+            firstElement.position - secondElement.position
+        );
+
+        console.log(sortedArray);
+
+        return sortedArray;
       } catch (e) {
         console.error(e);
       }
@@ -108,13 +114,33 @@ const resolvers = {
     },
     addList: async (_, { name, boardId }, { req }) => {
       try {
-        const newList = await List.create({
-          name: name,
-          userId: req.userId,
-          boardId: boardId,
+        const lists = await List.findAll({
+          where: { boardId: boardId },
         });
 
-        return newList.dataValues;
+        if (lists.length === 0) {
+          const newList = await List.create({
+            name: name,
+            userId: req.userId,
+            boardId: boardId,
+            position: 0,
+          });
+
+          return newList.dataValues;
+        } else {
+          const positions = lists.map((list) => list.dataValues.position);
+          const lastPosition = positions[positions.length - 1];
+          const newListPosition = lastPosition + 1;
+
+          const newList = await List.create({
+            name: name,
+            userId: req.userId,
+            boardId: boardId,
+            position: newListPosition,
+          });
+
+          return newList.dataValues;
+        }
       } catch (e) {
         console.error(e);
       }
@@ -142,6 +168,18 @@ const resolvers = {
         const cardToDestroy = await Card.destroy({ where: { id } });
 
         return cardToDestroy;
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    updateListsPositions: async (_, { updatedLists }) => {
+      try {
+        updatedLists.forEach(async (list) => {
+          await List.update(
+            { position: list.position },
+            { where: { id: list.id } }
+          );
+        });
       } catch (e) {
         console.error(e);
       }
