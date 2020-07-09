@@ -48,8 +48,8 @@ async function toData(token) {
   try {
     return jwt.verify(token, accessSecret);
   } catch (e) {
-    if (err instanceof jwt.TokenExpiredError) {
-      return err;
+    if (e instanceof jwt.TokenExpiredError) {
+      return e;
     }
   }
 }
