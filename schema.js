@@ -29,7 +29,11 @@ const typeDefs = gql`
   input ListInput {
     id: Int!
     position: Int!
-    name: String!
+  }
+
+  input CardInput {
+    id: Int!
+    position: Int!
   }
 
   type Card {
@@ -37,6 +41,7 @@ const typeDefs = gql`
     title: String!
     description: String
     status: String
+    position: Int
   }
 
   type Status {
@@ -73,6 +78,8 @@ const typeDefs = gql`
     ): User
 
     updateListsPositions(updatedLists: [ListInput]): [List]
+
+    updateCardsPositions(updatedCards: [CardInput]): [Card]
 
     login(email: String!, password: String!): Tokens
 

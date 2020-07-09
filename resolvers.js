@@ -72,8 +72,6 @@ const resolvers = {
             firstElement.position - secondElement.position
         );
 
-        console.log(sortedArray);
-
         return sortedArray;
       } catch (e) {
         console.error(e);
@@ -98,6 +96,10 @@ const resolvers = {
   Mutation: {
     addBoard: async (_, args, { req }) => {
       try {
+        console.log("req ?", req);
+
+        if (!req.userId) return new AuthenticationError("Authentication");
+
         const user = await User.findByPk(req.userId);
 
         const newBoard = await Board.create({
@@ -114,6 +116,8 @@ const resolvers = {
     },
     addList: async (_, { name, boardId }, { req }) => {
       try {
+        if (!req.userId) return new AuthenticationError("Authentication");
+
         const lists = await List.findAll({
           where: { boardId: boardId },
         });
@@ -147,18 +151,43 @@ const resolvers = {
     },
     addCard: async (_, { title, description, listId, status }, { req }) => {
       try {
+        if (!req.userId) return new AuthenticationError("Authentication");
+
         const user = await User.findByPk(req.userId);
 
-        const newCard = await Card.create({
-          title: title,
-          listId: listId,
-          description: description,
-          status: status,
+        const cards = await Card.findAll({
+          where: { listId },
         });
 
-        await user.addCard(newCard);
+        if (cards.length === 0) {
+          const newCard = await Card.create({
+            title: title,
+            listId: listId,
+            description: description,
+            status: status,
+            position: 0,
+          });
 
-        return newCard.dataValues;
+          await user.addCard(newCard);
+
+          return newCard.dataValues;
+        } else {
+          const positions = cards.map((card) => card.dataValues.position);
+          const lastPosition = positions[positions.length - 1];
+          const newCardPosition = lastPosition + 1;
+
+          const newCard = await Card.create({
+            title: title,
+            listId: listId,
+            description: description,
+            status: status,
+            position: newCardPosition,
+          });
+
+          await user.addCard(newCard);
+
+          return newCard.dataValues;
+        }
       } catch (e) {
         console.error(e);
       }
@@ -178,6 +207,18 @@ const resolvers = {
           await List.update(
             { position: list.position },
             { where: { id: list.id } }
+          );
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    updateCardsPositions: async (_, { updatedCards }) => {
+      try {
+        updatedCards.forEach(async (card) => {
+          await Card.update(
+            { position: card.position },
+            { where: { id: card.id } }
           );
         });
       } catch (e) {
