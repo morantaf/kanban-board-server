@@ -19,7 +19,7 @@ const Card = db.define(
       allowNull: true,
     },
     position: {
-      type: Sequelize.STRING,
+      type: Sequelize.INTEGER,
       allowNull: true,
     },
   },
