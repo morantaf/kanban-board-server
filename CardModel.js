@@ -18,6 +18,10 @@ const Card = db.define(
       type: Sequelize.STRING,
       allowNull: true,
     },
+    position: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
   },
   {
     timestamps: false,

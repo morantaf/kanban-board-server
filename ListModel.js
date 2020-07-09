@@ -10,6 +10,10 @@ const List = db.define(
       type: Sequelize.STRING,
       allowNull: false,
     },
+    position: {
+      type: Sequelize.INTEGER,
+      allowNull: true,
+    },
   },
   {
     timestamps: false,
