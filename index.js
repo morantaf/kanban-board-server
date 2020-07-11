@@ -5,7 +5,7 @@ const resolvers = require("./resolvers");
 const validateTokensMiddleware = require("./auth/validateTokensMiddleware");
 
 const app = express();
-const port = 4000;
+const port = process.env.PORT || 4000;
 const db = require("./db");
 
 const server = new ApolloServer({
