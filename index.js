@@ -3,10 +3,10 @@ const { ApolloServer } = require("apollo-server-express");
 const typeDefs = require("./schema");
 const resolvers = require("./resolvers");
 const validateTokensMiddleware = require("./auth/validateTokensMiddleware");
-
+const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 4000;
-const db = require("./db");
+const corsMiddleware = cors();
 
 const server = new ApolloServer({
   typeDefs,
@@ -16,7 +16,7 @@ const server = new ApolloServer({
     res,
   }),
 });
-
+app.use(corsMiddleware);
 app.use(validateTokensMiddleware);
 server.applyMiddleware({ app });
 
