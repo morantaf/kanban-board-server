@@ -1,12 +1,4 @@
-// const {
-//   validateAccessToken,
-//   validateRefreshToken,
-//   setTokens,
-// } = require("./setTokens");
-
 const { toData } = require("./setTokens");
-
-const User = require("../UserModel");
 
 const validateTokenMiddleware = async (req, res, next) => {
   try {
