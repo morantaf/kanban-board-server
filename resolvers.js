@@ -28,7 +28,10 @@ const resolvers = {
     },
     board: async (_, args, { req }) => {
       try {
-        if (!req.userId) return new AuthenticationError("Authentication");
+        if (!req.userId)
+          return new AuthenticationError(
+            "You must login to access your boards"
+          );
         const board = await Board.findByPk(args.id);
         return board.dataValues;
       } catch (e) {
@@ -37,7 +40,10 @@ const resolvers = {
     },
     boards: async (_, { userId }, { req }) => {
       try {
-        if (!req.userId) return new AuthenticationError("Authentication");
+        if (!req.userId)
+          return new AuthenticationError(
+            "You must login to access your boards"
+          );
 
         if (req.userId !== userId)
           return new AuthenticationError(
@@ -98,7 +104,10 @@ const resolvers = {
       try {
         console.log("req ?", req);
 
-        if (!req.userId) return new AuthenticationError("Authentication");
+        if (!req.userId)
+          return new AuthenticationError(
+            "You must login to modify your boards"
+          );
 
         const user = await User.findByPk(req.userId);
 
@@ -116,7 +125,10 @@ const resolvers = {
     },
     addList: async (_, { name, boardId }, { req }) => {
       try {
-        if (!req.userId) return new AuthenticationError("Authentication");
+        if (!req.userId)
+          return new AuthenticationError(
+            "You must login to modify your boards"
+          );
 
         const lists = await List.findAll({
           where: { boardId: boardId },
@@ -151,7 +163,10 @@ const resolvers = {
     },
     addCard: async (_, { title, description, listId, status }, { req }) => {
       try {
-        if (!req.userId) return new AuthenticationError("Authentication");
+        if (!req.userId)
+          return new AuthenticationError(
+            "You must login to modify your boards"
+          );
 
         const user = await User.findByPk(req.userId);
 
